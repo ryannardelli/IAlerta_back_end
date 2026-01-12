@@ -1,30 +1,103 @@
-import catch_api_key from "../utils/catch_api_key.js";
+// import catch_api_token from "../utils/catch_api_token.js";
+// import catch_url_api_text from "../utils/catch_url_api_text.js";
+
+// const HF_TOKEN = catch_api_token();
+// const API_URL = catch_url_api_text();
+
+// export async function detectAIContent(text) {
+//   const response = await fetch(API_URL, {
+//     method: "POST",
+//     headers: {
+//       Authorization: `Bearer ${HF_TOKEN}`,
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//   inputs: {
+//     text: text
+//   },
+//   parameters: {
+//     candidate_labels: ["AI-generated", "Human-written"]
+//   }
+// })
+
+//   });
+
+//   // 🔥 IMPORTANTE: leia como texto primeiro
+//   const raw = await response.text();
+
+//   let data;
+//   try {
+//     data = JSON.parse(raw);
+//   } catch {
+//     console.error("Resposta não JSON:", raw);
+//     throw new Error("Resposta inválida da Hugging Face");
+//   }
+
+//   if (!response.ok) {
+//     console.error("Erro HF:", data);
+//     throw new Error(data?.error || "Erro na Hugging Face");
+//   }
+
+//   const result = data[0];
+
+//   return {
+//     likelihood: result.label === "FAKE" ? "AI-generated" : "Human-written",
+//     confidence: result.score,
+//     provider: "huggingface",
+//     raw: result,
+//   };
+// }
+
+import catch_api_token from "../utils/catch_api_token.js";
 import catch_url_api_text from "../utils/catch_url_api_text.js";
 
-const API_KEY = catch_api_key();
+const HF_TOKEN = catch_api_token();
 const API_URL = catch_url_api_text();
 
 export async function detectAIContent(text) {
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${API_KEY}`,
-        "Content-Type": "application/json",
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${HF_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      inputs: {
+        text: text
       },
-      body: JSON.stringify({ content: text }),
-    });
+      parameters: {
+        candidate_labels: ["AI-generated", "Human-written"]
+      }
+    }),
+  });
 
-    if (!response.ok) {
-      const errData = await response.json();
-      console.error("Erro na API de detecção:", errData);
-      throw new Error("Falha ao detectar conteúdo");
-    }
+  const raw = await response.text();
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Erro na API de detecção:", error.message);
-    throw new Error("Falha ao detectar conteúdo");
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    console.error("Resposta não JSON:", raw);
+    throw new Error("Resposta inválida da Hugging Face");
   }
+
+  if (!response.ok) {
+    console.error("Erro HF:", data);
+    throw new Error(data?.error || "Erro na Hugging Face");
+  }
+
+  const topResult = Array.isArray(data) ? data[0] : data;
+
+  if (!topResult?.label || topResult?.score === undefined) {
+    console.error("Formato inesperado HF:", data);
+    throw new Error("Formato inesperado da Hugging Face");
+  }
+
+  return {
+    likelihood: topResult.label,
+    confidence: Number(topResult.score.toFixed(3)),
+    provider: "huggingface",
+    raw: data
+  };
+
 }

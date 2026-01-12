@@ -1,7 +1,6 @@
 import { detectAIContent } from "../services/detectAIService.js";
 
 export default async function detectAI(req, res) {
-  // console.log("Requisição recebida:", req.body);
   const { text } = req.body;
 
   if (!text) {
