@@ -2,11 +2,7 @@ import { detectAIContent } from "../services/detectAIService.js";
 
 export default async function detectAI(req, res) {
   const { text } = req.body;
-
-  if (!text) {
-    return res.status(400).json({ error: "Texto é obrigatório" });
-  }
-
+  
   try {
     const result = await detectAIContent(text);
     return res.json(result);
