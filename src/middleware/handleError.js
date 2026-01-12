@@ -1,6 +1,8 @@
-import { InternalServiceError } from ("../exceptions/domain/InternalServiceError");
+import { InternalServiceError } from "../exceptions/domain/InternalServiceError.js";
 
-function handlError(err, req, res, next) {
+export function handleError(err, req, res, next) {
+  console.log(err);
+  
   if(err.statusCode) {
     return res.status(err.statusCode).json({
       message: err.message
@@ -13,5 +15,3 @@ function handlError(err, req, res, next) {
     })
   }
 }
-
-module.exports = handlError;

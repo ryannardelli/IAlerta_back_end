@@ -1,5 +1,6 @@
 import { InvalidText } from "../exceptions/common/InvalidText.js";
 import { MaxTextLenght } from "../exceptions/common/MaxTextLength.js";
+import { MinTextLength } from "../exceptions/common/MinTextLength.js";
 import { InvalidCredentialsHug } from "../exceptions/domain/InvalidCredentialsHug.js";
 import { InvalidFormatHug } from "../exceptions/domain/InvalidFormatHug.js";
 import catch_api_token from "../utils/catch_api_token.js";
@@ -12,6 +13,7 @@ export default async function detectAIContent(text) {
 
   if(!text || typeof text !== "string") throw new InvalidText();
   if(text.length > 3000) throw new MaxTextLenght();
+  if(text.length < 50) throw new MinTextLength();
 
   const response = await fetch(API_URL, {
     method: "POST",
