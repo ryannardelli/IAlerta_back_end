@@ -2,8 +2,6 @@ import { InvalidText } from "../exceptions/common/InvalidText.js";
 import { MaxTextLenght } from "../exceptions/common/MaxTextLength.js";
 import { InvalidCredentialsHug } from "../exceptions/domain/InvalidCredentialsHug.js";
 import { InvalidFormatHug } from "../exceptions/domain/InvalidFormatHug.js";
-import { ServiceUnavailable } from "../exceptions/domain/ServiceUnavailable.js";
-
 import catch_api_token from "../utils/catch_api_token.js";
 import catch_url_api_text from "../utils/catch_url_api_text.js";
 
