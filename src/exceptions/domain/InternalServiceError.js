@@ -1,9 +1,7 @@
-class ServiceUnavailable extends Error {
-  constructor(message = "Serviço temporariamente indisponível, tente novamente mais tarde.") {
+export class InternalServiceError extends Error() {
+  constructor(message = "Ocorreu um erro inesperado no servidor.") {
     super(message);
-    this.message = "ServiceUnavailable";
-    this.statusCode = 503;
+    this.message = "InternalServerError";
+    this.statusCode = 500;
   }
 }
-
-module.exports = ServiceUnavailable;

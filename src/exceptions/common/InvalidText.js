@@ -1,4 +1,4 @@
-class InvalidText extends Error() {
+export class InvalidText extends Error {
   constructor(message = "Texto inválido para análise.") {
     super(message);
     this.message = "InvalidText";
