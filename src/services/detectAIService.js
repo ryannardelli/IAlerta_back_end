@@ -1,4 +1,5 @@
 import { InvalidText } from "../exceptions/common/InvalidText.js";
+import { MaxTextLenght } from "../exceptions/common/MaxTextLength.js";
 import { InvalidCredentialsHug } from "../exceptions/domain/InvalidCredentialsHug.js";
 import { InvalidFormatHug } from "../exceptions/domain/InvalidFormatHug.js";
 import { ServiceUnavailable } from "../exceptions/domain/ServiceUnavailable.js";
@@ -12,7 +13,7 @@ const API_URL = catch_url_api_text();
 export default async function detectAIContent(text) {
 
   if(!text || typeof text !== "string") throw new InvalidText();
-  if(text.length > 3000) throw new Max();
+  if(text.length > 3000) throw new MaxTextLenght();
 
   const response = await fetch(API_URL, {
     method: "POST",
@@ -37,7 +38,7 @@ export default async function detectAIContent(text) {
     data = JSON.parse(raw);
   } catch {
     console.error("Resposta não JSON:", raw);
-    throw new ServiceUnavailable();
+    throw new InvalidFormatHug();
   }
 
   if (!response.ok) {
