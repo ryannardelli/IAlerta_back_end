@@ -1,5 +1,7 @@
 import express from 'express';
 import detectAI from '../controllers/detectAIController.js';
+import detectAI_ImageController from '../controllers/detectAI_ImageController.js';
+import { uploadImage } from '../middleware/uploadImage.js';
 
 const router = express.Router();
 
@@ -83,5 +85,7 @@ const router = express.Router();
  *                   example: "Internal Server Error"
  */
 router.post("/detect-ai", detectAI);
+
+router.post("/detect-ai-image", uploadImage.single("image"), detectAI_ImageController);
 
 export default router;
