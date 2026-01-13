@@ -1,10 +1,9 @@
 import fs from 'fs';
-
 import catch_api_token from '../utils/catch_api_token.js';
 import { InternalServiceImage } from '../exceptions/domain/InternalServiceImage.js';
 
 const HF_TOKEN = catch_api_token();
-const MODEL_URL = 'https://api-inference.huggingface.co/models/umm-maybe/AI-image-detector';
+const MODEL_URL = 'https://router.huggingface.co/hf-inference/models/Ateeqq/ai-vs-human-image-detector';
 
 export default async function detectAI_ImageService(imagePath) {
 
@@ -19,7 +18,11 @@ export default async function detectAI_ImageService(imagePath) {
     body: imageBuffer,
 });
 
-    if(!response.ok) throw new InternalServiceImage();
+    if(!response.ok) {
+        const text = await response.text();
+        console.error("Hugging Face error:", text);
+        throw new InternalServiceImage()
+    };
 
     return await response.json();
 }
