@@ -7,7 +7,7 @@ const MODEL_URL = 'https://router.huggingface.co/hf-inference/models/Ateeqq/ai-v
 
 export default async function detectAI_ImageService(imagePath) {
 
-    const imageBuffer = fs.readFileSync(imagePath);
+   const imageBuffer = fs.readFileSync(imagePath);
 
    const response = await fetch(MODEL_URL, {
    method: "POST",
@@ -21,7 +21,7 @@ export default async function detectAI_ImageService(imagePath) {
     if(!response.ok) {
         const text = await response.text();
         console.error("Hugging Face error:", text);
-        throw new InternalServiceImage()
+        throw new InternalServiceImage();
     };
 
     return await response.json();

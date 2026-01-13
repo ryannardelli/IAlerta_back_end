@@ -1,7 +1,11 @@
 import express from 'express';
+
 import detectAI from '../controllers/detectAIController.js';
 import detectAI_ImageController from '../controllers/detectAI_ImageController.js';
+import detectAIArchiveController from '../controllers/detectAIArchiveController.js';
+
 import { uploadImage } from '../middleware/uploadImage.js';
+import { uploadArchive } from '../middleware/uploadArchive.js';
 
 const router = express.Router();
 
@@ -160,5 +164,80 @@ router.post("/detect-ai-text", detectAI);
  *                   example: "Internal Server Error"
  */
 router.post("/detect-ai-image", uploadImage.single("image"), detectAI_ImageController);
+
+/**
+ * @swagger
+ * /detect-ai-archive:
+ *   post:
+ *     summary: Detecta se um documento (PDF ou Word) contém conteúdo gerado por IA
+ *     tags: [AI]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - file
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: Documento PDF ou Word que será analisado
+ *     responses:
+ *       200:
+ *         description: Resultado da análise de IA para o documento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 likelihood:
+ *                   type: string
+ *                   description: Probabilidade de o texto ter sido gerado por IA
+ *                   example: "AI-generated"
+ *                 confidence:
+ *                   type: number
+ *                   description: Confiança do resultado
+ *                   example: 0.92
+ *                 provider:
+ *                   type: string
+ *                   description: Serviço usado para análise
+ *                   example: "huggingface"
+ *                 raw:
+ *                   type: array
+ *                   description: Detalhes brutos da análise
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       label:
+ *                         type: string
+ *                         example: "AI-generated"
+ *                       score:
+ *                         type: number
+ *                         example: 0.92
+ *       400:
+ *         description: Arquivo inválido ou não enviado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "InvalidDocument"
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Internal Server Error"
+ */
+
+router.post("/detect-ai-archive", uploadArchive.single("file"), detectAIArchiveController);
 
 export default router;
