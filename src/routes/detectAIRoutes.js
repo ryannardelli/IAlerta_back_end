@@ -14,7 +14,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /detect-ai:
+ * /detect-ai-text:
  *   post:
  *     summary: Detecta se um texto foi gerado por IA
  *     tags: [AI]
@@ -84,8 +84,81 @@ const router = express.Router();
  *                   type: string
  *                   example: "Internal Server Error"
  */
-router.post("/detect-ai", detectAI);
+router.post("/detect-ai-text", detectAI);
 
+
+/**
+ * @swagger
+ * /detect-ai-image:
+ *   post:
+ *     summary: Detecta se uma imagem contém conteúdo gerado por IA
+ *     tags: [AI]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - image
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Imagem que será analisada
+ *     responses:
+ *       200:
+ *         description: Resultado da análise de IA para a imagem
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 likelihood:
+ *                   type: string
+ *                   description: Probabilidade de a imagem ter sido gerada por IA
+ *                   example: "AI-generated"
+ *                 confidence:
+ *                   type: number
+ *                   description: Confiança do resultado
+ *                   example: 0.91
+ *                 provider:
+ *                   type: string
+ *                   description: Serviço usado para análise
+ *                   example: "huggingface"
+ *                 raw:
+ *                   type: array
+ *                   description: Detalhes brutos da análise
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       label:
+ *                         type: string
+ *                         example: "AI-generated"
+ *                       score:
+ *                         type: number
+ *                         example: 0.91
+ *       400:
+ *         description: Arquivo inválido ou não enviado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "InvalidImage"
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Internal Server Error"
+ */
 router.post("/detect-ai-image", uploadImage.single("image"), detectAI_ImageController);
 
 export default router;
