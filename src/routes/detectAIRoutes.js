@@ -239,6 +239,6 @@ router.post("/detect-ai-image", uploadImage.single("image"), detectAI_ImageContr
  *                   example: "Internal Server Error"
  */
 
-router.post("/detect-ai-archive", checkFile, uploadArchive.single("file"), detectAIArchiveController);
+router.post("/detect-ai-archive", uploadArchive.single("file"), checkFile, detectAIArchiveController);
 
 export default router;
