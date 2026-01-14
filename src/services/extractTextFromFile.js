@@ -9,6 +9,8 @@ import { InvalidWordError } from "../exceptions/common/InvalidWordError.js";
 import { EmptyFileError } from "../exceptions/common/EmptyFileError.js";
 
 export async function extractTextFromFile(filePath, mimetype) {
+
+  if(!filePath) throw new EmptyFileError();
   
   // PDF
   if (mimetype === "application/pdf") {
