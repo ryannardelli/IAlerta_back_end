@@ -7,6 +7,7 @@ import detectAIArchiveController from '../controllers/detectAIArchiveController.
 import { uploadImage } from '../middleware/uploadImage.js';
 import { uploadArchive } from '../middleware/uploadArchive.js';
 import { checkFile } from '../middleware/checkFile.js';
+import { checkImage } from '../middleware/checkImage.js';
 
 const router = express.Router();
 
@@ -164,7 +165,7 @@ router.post("/detect-ai-text", detectAI);
  *                   type: string
  *                   example: "Internal Server Error"
  */
-router.post("/detect-ai-image", uploadImage.single("image"), detectAI_ImageController);
+router.post("/detect-ai-image", uploadImage.single("image"), checkImage, detectAI_ImageController);
 
 /**
  * @swagger
