@@ -1,5 +1,5 @@
 import fs from "fs";
-import pdfParse from "pdf-parse";
+import * as pdfParse from "pdf-parse";
 import mammoth from "mammoth";
 
 import { InvalidDocumentType } from "../exceptions/common/InvalidDocumentType.js";
@@ -24,6 +24,9 @@ export async function extractTextFromFile(filePath, mimetype) {
 
     try {
       const data = await pdfParse(dataBuffer);
+      console.log("Texto extraído do PDF:", JSON.stringify(data.text));
+      console.log("Tamanho do texto extraído:", data.text.length);
+
       if (!data.text || data.text.trim() === "") {
         throw new EmptyFileError();
       }
@@ -39,6 +42,10 @@ export async function extractTextFromFile(filePath, mimetype) {
   if (mimetype === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
     try {
       const data = await mammoth.extractRawText({ path: filePath });
+      console.log("=== TEXTO EXTRAÍDO DO WORD ===");
+      console.log(data.value);
+      console.log("Tamanho do texto extraído:", data.value.length);
+
       if (!data.value || data.value.trim() === "") {
         throw new EmptyFileError();
       }
