@@ -11,3 +11,4 @@ export default async function detectAIArchiveController(req, res, next) {
     next(error);
   }
 }
+
