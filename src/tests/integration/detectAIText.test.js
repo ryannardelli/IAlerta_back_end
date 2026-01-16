@@ -4,10 +4,6 @@ import { MinTextLength } from "../../exceptions/common/MinTextLength";
 import { InvalidFormatHug } from "../../exceptions/domain/InvalidFormatHug";
 import detectAIContentService from "../../services/detectAIContentService";
 
-import normalizeText from "../../utils/normalizeText";
-
-jest.mock("../../utils/normalizeText"); 
-
 describe("POST /detector-ai-text", () => {
   test("it throw InvalidText if text are empty or is not a string", async () => {
     await expect(detectAIContentService("")).rejects.toBeInstanceOf(InvalidText);
