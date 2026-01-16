@@ -1,5 +1,5 @@
 import fs from "fs";
-import { PDFParse } from 'pdf-parse';
+import pdfParse from 'pdf-parse/lib/pdf-parse.js'; // Importe direto do arquivo lib
 import mammoth from "mammoth";
 
 import { InvalidDocumentType } from "../exceptions/common/InvalidDocumentType.js";
@@ -11,37 +11,28 @@ import { EmptyFileError } from "../exceptions/common/EmptyFileError.js";
 export async function extractTextFromFile(filePath, mimetype) {
   if (!filePath) throw new EmptyFileError();
 
-  // PDF
+  // PDF ---
   if (mimetype === "application/pdf") {
-    let dataBuffer;
     try {
-      dataBuffer = fs.readFileSync(filePath);
-    } catch (err) {
-      console.error("Erro ao ler o arquivo PDF:", err.message);
-      throw new FileReadError();
-    }
+      const dataBuffer = fs.readFileSync(filePath);
+      
+      const data = await pdfParse(dataBuffer);
 
-    try {
-      const parser = new PDFParse({ data: dataBuffer }); // <- usa 'data' e não 'path'
-      const result = await parser.getText();
-      await parser.destroy();
-
-      if (!result.text || result.text.trim() === "") {
+      if (!data.text || data.text.trim() === "") {
         throw new EmptyFileError();
       }
 
-      console.log("Texto extraído do PDF:", result.text);
-      console.log("Tamanho do texto extraído:", result.text.length);
+      console.log("Texto extraído do PDF com sucesso.");
+      return data.text;
 
-      return result.text;
     } catch (err) {
-      console.error("Erro ao processar PDF:", err.message);
       if (err instanceof EmptyFileError) throw err;
+      console.error("Erro ao processar PDF:", err.message);
       throw new InvalidPDFError();
     }
   }
 
-  // Word
+  // WORD ---
   if (mimetype === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
     try {
       const data = await mammoth.extractRawText({ path: filePath });
@@ -50,13 +41,12 @@ export async function extractTextFromFile(filePath, mimetype) {
         throw new EmptyFileError();
       }
 
-      console.log("Texto extraído do Word:", data.value);
-      console.log("Tamanho do texto extraído:", data.value.length);
-
+      console.log("Texto extraído do Word com sucesso.");
       return data.value;
+
     } catch (err) {
-      console.error("Erro ao processar Word:", err.message);
       if (err instanceof EmptyFileError) throw err;
+      console.error("Erro ao processar Word:", err.message);
       throw new InvalidWordError();
     }
   }
