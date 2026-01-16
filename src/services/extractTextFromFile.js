@@ -1,5 +1,5 @@
 import fs from "fs";
-import pdfParse from "pdf-parse";
+import { PDFParse } from 'pdf-parse';
 import mammoth from "mammoth";
 
 import { InvalidDocumentType } from "../exceptions/common/InvalidDocumentType.js";
@@ -9,9 +9,8 @@ import { InvalidWordError } from "../exceptions/common/InvalidWordError.js";
 import { EmptyFileError } from "../exceptions/common/EmptyFileError.js";
 
 export async function extractTextFromFile(filePath, mimetype) {
+  if (!filePath) throw new EmptyFileError();
 
-  if(!filePath) throw new EmptyFileError();
-  
   // PDF
   if (mimetype === "application/pdf") {
     let dataBuffer;
@@ -23,11 +22,18 @@ export async function extractTextFromFile(filePath, mimetype) {
     }
 
     try {
-      const data = await pdfParse(dataBuffer);
-      if (!data.text || data.text.trim() === "") {
+      const parser = new PDFParse({ data: dataBuffer }); // <- usa 'data' e não 'path'
+      const result = await parser.getText();
+      await parser.destroy();
+
+      if (!result.text || result.text.trim() === "") {
         throw new EmptyFileError();
       }
-      return data.text;
+
+      console.log("Texto extraído do PDF:", result.text);
+      console.log("Tamanho do texto extraído:", result.text.length);
+
+      return result.text;
     } catch (err) {
       console.error("Erro ao processar PDF:", err.message);
       if (err instanceof EmptyFileError) throw err;
@@ -39,9 +45,14 @@ export async function extractTextFromFile(filePath, mimetype) {
   if (mimetype === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
     try {
       const data = await mammoth.extractRawText({ path: filePath });
+
       if (!data.value || data.value.trim() === "") {
         throw new EmptyFileError();
       }
+
+      console.log("Texto extraído do Word:", data.value);
+      console.log("Tamanho do texto extraído:", data.value.length);
+
       return data.value;
     } catch (err) {
       console.error("Erro ao processar Word:", err.message);
