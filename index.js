@@ -1,6 +1,7 @@
 import app from './app.js';
-import { PORT } from './src/config/secretKeys/index.js';
 
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
