@@ -44,4 +44,4 @@ jobs:
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated \
-            --set-env-vars PORT=3000,HF_TOKEN=${{ secrets.HF_TOKEN }}
+           --set-env-vars HF_TOKEN=${{ secrets.HF_TOKEN }}
