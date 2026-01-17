@@ -8,10 +8,10 @@ The application was designed with a strong focus on **data processing pipelines*
 
 ---
 
-Technologies
-Node.js
-Express
-Docker
+## Technologies
+- Node.js
+- Express
+- Docker
 
 ## Project Architecture
 
@@ -130,3 +130,4 @@ npm run dev
 * Result caching
 * Monitoring and logging
 * Support for additional AI models
+
