@@ -125,9 +125,10 @@ npm install
 npm run dev
 ```
 
-## 📈 Roadmap
+## Roadmap
 
 * Result caching
 * Monitoring and logging
 * Support for additional AI models
+
 
