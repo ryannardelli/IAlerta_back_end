@@ -28,4 +28,4 @@ jobs:
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated
-            --set-env-vars NODE_ENV=production,API_KEY=${{ secrets.API_KEY }}
+            --set-env-vars PORT=3000,HF_TOKEN=${{ secrets.HF_TOKEN }}
