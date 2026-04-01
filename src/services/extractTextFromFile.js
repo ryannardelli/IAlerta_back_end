@@ -1,22 +1,18 @@
-import fs from "fs";
-import pdfParse from 'pdf-parse/lib/pdf-parse.js'; // Importe direto do arquivo lib
+import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import mammoth from "mammoth";
 
 import { InvalidDocumentType } from "../exceptions/common/InvalidDocumentType.js";
-import { FileReadError } from "../exceptions/common/FileReadError.js";
 import { InvalidPDFError } from "../exceptions/common/InvalidPDFError.js";
 import { InvalidWordError } from "../exceptions/common/InvalidWordError.js";
 import { EmptyFileError } from "../exceptions/common/EmptyFileError.js";
 
-export async function extractTextFromFile(filePath, mimetype) {
-  if (!filePath) throw new EmptyFileError();
+export async function extractTextFromFile(buffer, mimetype) {
+  if (!buffer) throw new EmptyFileError();
 
-  // PDF ---
+  // 🔹 PDF
   if (mimetype === "application/pdf") {
     try {
-      const dataBuffer = fs.readFileSync(filePath);
-      
-      const data = await pdfParse(dataBuffer);
+      const data = await pdfParse(buffer);
 
       if (!data.text || data.text.trim() === "") {
         throw new EmptyFileError();
@@ -32,17 +28,17 @@ export async function extractTextFromFile(filePath, mimetype) {
     }
   }
 
-  // WORD ---
+  // 🔹 WORD (DOCX)
   if (mimetype === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
     try {
-      const data = await mammoth.extractRawText({ path: filePath });
+      const result = await mammoth.extractRawText({ buffer });
 
-      if (!data.value || data.value.trim() === "") {
+      if (!result.value || result.value.trim() === "") {
         throw new EmptyFileError();
       }
 
       console.log("Texto extraído do Word com sucesso.");
-      return data.value;
+      return result.value;
 
     } catch (err) {
       if (err instanceof EmptyFileError) throw err;
